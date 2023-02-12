@@ -30,7 +30,7 @@ public class FilesController {
 
     @GetMapping(value = "export/socks")
     @Operation(
-            summary = "Экспорт носков в файле"
+            summary = "Экспорт носков в файл"
     )
     @ApiResponse(
             responseCode = "200",
@@ -73,7 +73,7 @@ public class FilesController {
 
     @GetMapping(value = "export/operations")
     @Operation(
-            summary = "Экспорт операций в файле"
+            summary = "Экспорт операций в файл"
     )
     @ApiResponse(
             responseCode = "200",
