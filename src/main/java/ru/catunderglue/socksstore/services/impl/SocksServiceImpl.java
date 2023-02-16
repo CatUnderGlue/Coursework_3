@@ -20,25 +20,26 @@ public class SocksServiceImpl implements SocksService {
     private List<Socks> socksList = new ArrayList<>();
     private final FilesService filesService;
     private final OperationsService operationsService;
+    private final ObjectMapper mapper;
 
     public SocksServiceImpl(FilesService filesService, OperationsService operationsService) {
         this.filesService = filesService;
         this.operationsService = operationsService;
+        this.mapper = new ObjectMapper();
     }
 
     @Override
     public List<Socks> getAllSocks(){
-        init();
         return socksList;
     }
 
     @Override
     public Socks addSocks(Socks socks) {
         boolean flag = false;
-        for (Socks socks_temp : socksList) {
-            if (socks.getColor().equals(socks_temp.getColor()) && socks.getSize().equals(socks_temp.getSize()) && socks.getCottonRel() == socks_temp.getCottonRel()) {
-                int index = socksList.indexOf(socks_temp);
-                socks.setQuantity(socks.getQuantity() + socks_temp.getQuantity());
+        for (Socks socksTemp : socksList) {
+            if (socks.getColor().equals(socksTemp.getColor()) && socks.getSize().equals(socksTemp.getSize()) && socks.getCottonRel() == socksTemp.getCottonRel()) {
+                int index = socksList.indexOf(socksTemp);
+                socks.setQuantity(socks.getQuantity() + socksTemp.getQuantity());
                 socksList.set(index, socks);
                 flag = true;
             }
@@ -53,7 +54,6 @@ public class SocksServiceImpl implements SocksService {
 
     @Override
     public int getSocks(Color color, Size size, int cottonMin, int cottonMax) {
-        init();
         int quantity = 0;
         for (Socks socks : socksList) {
             if (socks.getColor().equals(color) && socks.getSize().equals(size) && socks.getCottonRel() >= cottonMin && socks.getCottonRel() <= cottonMax) {
@@ -64,14 +64,13 @@ public class SocksServiceImpl implements SocksService {
     }
 
     @Override
-    public boolean updateSocks(Color color, Size size, int cottonMin, int cottonMax) {
-        Socks socks = new Socks(color, size, cottonMin, cottonMax);
-        for (Socks socks_temp : socksList) {
-            if (socks.getColor().equals(socks_temp.getColor()) && socks.getSize().equals(socks_temp.getSize())
-                    && socks.getCottonRel() == socks_temp.getCottonRel() && (socks_temp.getQuantity() - socks.getQuantity() >= 0)){
-                int index = socksList.indexOf(socks_temp);
+    public boolean updateSocks(Socks socks) {
+        for (Socks socksTemp : socksList) {
+            if (socks.getColor().equals(socksTemp.getColor()) && socks.getSize().equals(socksTemp.getSize())
+                    && socks.getCottonRel() == socksTemp.getCottonRel() && (socksTemp.getQuantity() - socks.getQuantity() >= 0)){
+                int index = socksList.indexOf(socksTemp);
                 operationsService.addOperation(OperationType.REMOVE, socks);
-                socks.setQuantity(socks_temp.getQuantity() - socks.getQuantity());
+                socks.setQuantity(socksTemp.getQuantity() - socks.getQuantity());
                 socksList.set(index, socks);
                 saveToFile();
                 return true;
@@ -93,7 +92,7 @@ public class SocksServiceImpl implements SocksService {
 
     private void saveToFile() {
         try {
-            String json = new ObjectMapper().writeValueAsString(socksList);
+            String json = mapper.writeValueAsString(socksList);
             filesService.saveSocksToFile(json);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
@@ -104,7 +103,7 @@ public class SocksServiceImpl implements SocksService {
         String json = filesService.readSocksFromFile();
         try {
             if (!json.isBlank()) {
-                socksList = new ObjectMapper().readValue(json, new TypeReference<List<Socks>>() {});
+                socksList = mapper.readValue(json, new TypeReference<List<Socks>>() {});
             }
         } catch (JsonProcessingException e) {
             e.printStackTrace();

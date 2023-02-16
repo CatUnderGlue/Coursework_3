@@ -3,6 +3,7 @@ package ru.catunderglue.socksstore.controllers;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -16,6 +17,7 @@ import ru.catunderglue.socksstore.models.enums.Size;
 import ru.catunderglue.socksstore.models.Socks;
 import ru.catunderglue.socksstore.services.SocksService;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -56,8 +58,9 @@ public class SocksController {
                     content = @Content()
             )
     })
-    public ResponseEntity<Socks> addSocks(@RequestBody Socks socks){
+    public ResponseEntity<Socks> addSocks(@Valid @RequestBody Socks socks){
         return ResponseEntity.ok(socksService.addSocks(socks));
+
     }
 
     @GetMapping("all")
@@ -69,7 +72,7 @@ public class SocksController {
             description = "Запрос выполнен, носки получены",
             content = @Content(
                     mediaType = "application/json",
-                    schema = @Schema(implementation = Socks.class)
+                    array = @ArraySchema(schema = @Schema(implementation = Socks.class))
             )
     )
     public ResponseEntity<List<Socks>> getAllSocks(){
@@ -101,7 +104,7 @@ public class SocksController {
     @ApiResponses(value = {
             @ApiResponse(
                     responseCode = "200",
-                    description = "Запрос выполнен, результат в теле ответа в виде строкового представления целого числа",
+                    description = "Запрос выполнен, результат в теле ответа в виде целого числа",
                     content = @Content(
                             mediaType = "text/plain",
                             examples = {@ExampleObject(value = "20")}
@@ -118,12 +121,12 @@ public class SocksController {
                     content = @Content()
             )
     })
-    public ResponseEntity<String> getSocks(@RequestParam Color color,
+    public ResponseEntity<Integer> getSocks(@RequestParam Color color,
                                             @RequestParam Size size,
                                             @RequestParam(defaultValue = "1") int cottonMin,
                                             @RequestParam(defaultValue = "100") int cottonMax){
         Integer quantity = socksService.getSocks(color, size, cottonMin, cottonMax);
-        return ResponseEntity.ok(String.valueOf(quantity));
+        return ResponseEntity.ok(quantity);
     }
 
     @PutMapping()
@@ -150,8 +153,8 @@ public class SocksController {
                     content = @Content()
             )
     })
-    public ResponseEntity<Object> updateSocks(@RequestBody Socks socks){
-        if (socksService.updateSocks(socks.getColor(), socks.getSize(), socks.getCottonRel(), socks.getQuantity())){
+    public ResponseEntity<Socks> updateSocks(@Valid @RequestBody Socks socks){
+        if (socksService.updateSocks(socks)){
             return ResponseEntity.ok(socks);
         } else {
             return ResponseEntity.badRequest().build();

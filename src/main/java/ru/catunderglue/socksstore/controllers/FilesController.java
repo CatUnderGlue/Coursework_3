@@ -3,6 +3,7 @@ package ru.catunderglue.socksstore.controllers;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
@@ -32,12 +33,18 @@ public class FilesController {
     @Operation(
             summary = "Экспорт носков в файл"
     )
-    @ApiResponse(
-            responseCode = "200",
-            description = "Носки успешно выгружены",
-            content = @Content(
-                    mediaType = "multipart/form-data"
-            )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Носки успешно выгружены",
+                    content = @Content(
+                            mediaType = "application/json"
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "204",
+                    description = "Носки отсутствуют на складе"
+            )}
     )
     public ResponseEntity<InputStreamResource> exportRecipesDataFile() throws FileNotFoundException {
         File file = filesService.getSocksDataFileInfo();
@@ -56,10 +63,17 @@ public class FilesController {
     @Operation(
             summary = "Импорт носков файлом"
     )
-    @ApiResponse(
-            responseCode = "200",
-            description = "Носки успешно загружены"
-    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Носки успешно загружены"
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "Сервер столкнулся с неожиданной ошибкой"
+            )
+    })
+
     @PostMapping(value = "import/socks", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<String> importSocksDataFile(@RequestParam MultipartFile file) {
         try {
@@ -75,13 +89,20 @@ public class FilesController {
     @Operation(
             summary = "Экспорт операций в файл"
     )
-    @ApiResponse(
-            responseCode = "200",
-            description = "Операции успешно выгружены",
-            content = @Content(
-                    mediaType = "multipart/form-data"
-            )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Операции успешно выгружены",
+                    content = @Content(
+                            mediaType = "application/json"
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "204",
+                    description = "Операции отсутствуют"
+            )}
     )
+
     public ResponseEntity<InputStreamResource> exportOperationsDataFile() throws FileNotFoundException {
         File file = filesService.getOperationsDataFileInfo();
         if (file.exists()) {
@@ -99,10 +120,16 @@ public class FilesController {
     @Operation(
             summary = "Импорт операций файлом"
     )
-    @ApiResponse(
-            responseCode = "200",
-            description = "Операции успешно загружены"
-    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Операции успешно загружены"
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "Сервер столкнулся с неожиданной ошибкой"
+            )
+    })
     @PostMapping(value = "import/operations", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<String> importOperationsDataFile(@RequestParam MultipartFile file) {
         try {

@@ -11,6 +11,6 @@ public interface SocksService {
 
     Socks addSocks(Socks socks);
     int getSocks(Color color, Size size, int cottonMin, int cottonMax);
-    boolean updateSocks(Color color, Size size, int cottonMin, int cottonMax);
+    boolean updateSocks(Socks socks);
     boolean removeSocks(Socks socks);
 }

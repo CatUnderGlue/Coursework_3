@@ -18,12 +18,14 @@ import java.util.List;
 @Service
 public class OperationsServiceImpl implements OperationsService {
 
-    List<Operation> operations = new LinkedList<>();
+    private List<Operation> operations = new LinkedList<>();
 
     private final FilesService filesService;
+    private final ObjectMapper mapper;
 
     public OperationsServiceImpl(FilesService filesService) {
         this.filesService = filesService;
+        this.mapper = new ObjectMapper().registerModule(new JavaTimeModule());
     }
 
     @Override
@@ -34,7 +36,6 @@ public class OperationsServiceImpl implements OperationsService {
 
     private void saveToFile() {
         try {
-            ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModule());
             String json = mapper.writeValueAsString(operations);
             filesService.saveOperationsToFile(json);
         } catch (JsonProcessingException e) {
@@ -46,7 +47,6 @@ public class OperationsServiceImpl implements OperationsService {
         String json = filesService.readOperationsFromFile();
         try {
             if (!json.isBlank()) {
-                ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModule());
                 operations = mapper.readValue(json, new TypeReference<List<Operation>>() {
                 });
             }

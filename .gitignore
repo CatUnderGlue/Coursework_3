@@ -1,4 +1,6 @@
 HELP.md
+src/main/resources/socks.json
+src/main/resources/operations.json
 target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/

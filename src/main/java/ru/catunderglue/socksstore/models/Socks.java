@@ -13,11 +13,11 @@ import javax.validation.constraints.Min;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Socks {
-    Color color;
-    Size size;
-    @Min(1)
-    @Max(100)
-    int cottonRel;
-    @Min(1)
-    int quantity;
+    private Color color;
+    private Size size;
+    @Min(value = 1, message = "Процент содержания хлопка не может быть меньше 1")
+    @Max(value = 100, message = "Процент содержания хлопка не может быть больше 100")
+    private int cottonRel;
+    @Min(value = 1, message = "Кол-во носков не может быть меньше 1")
+    private int quantity;
 }
