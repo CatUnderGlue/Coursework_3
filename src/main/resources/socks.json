@@ -1,0 +1,38 @@
+[
+  {
+    "color": "RED",
+    "size": "S",
+    "cottonRel": 100,
+    "quantity": 40
+  },
+  {
+    "color": "YELLOW",
+    "size": "XXL",
+    "cottonRel": 45,
+    "quantity": 25
+  },
+  {
+    "color": "PURPLE",
+    "size": "XL",
+    "cottonRel": 75,
+    "quantity": 30
+  },
+  {
+    "color": "YELLOW",
+    "size": "S",
+    "cottonRel": 55,
+    "quantity": 20
+  },
+  {
+    "color": "BLACK",
+    "size": "S",
+    "cottonRel": 80,
+    "quantity": 10
+  },
+  {
+    "color": "WHITE",
+    "size": "L",
+    "cottonRel": 35,
+    "quantity": 5
+  }
+]
